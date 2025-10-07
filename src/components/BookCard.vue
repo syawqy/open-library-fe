@@ -12,6 +12,7 @@ const emit = defineEmits<{
   (e: 'add', book: Book): void
   (e: 'remove', key: string): void
   (e: 'updateProgress', key: string, value: number): void
+  (e: 'details', book: Book): void
 }>()
 
 function onAdd() {
@@ -22,6 +23,9 @@ function onRemove() {
 }
 function onProgress(value: number) {
   emit('updateProgress', props.book.key, value)
+}
+function onDetails() {
+  emit('details', props.book)
 }
 </script>
 
@@ -52,6 +56,7 @@ function onProgress(value: number) {
           <v-btn class="mr-2" :color="props.inList ? 'secondary' : 'primary'" @click="props.inList ? onRemove() : onAdd()">
             {{ props.inList ? 'Remove' : 'Add' }}
           </v-btn>
+          <v-btn variant="text" @click="onDetails">Details</v-btn>
         </div>
         <!-- Always reserve smaller space for progress to keep height constant -->
         <div class="mt-2 progress-block">
@@ -74,6 +79,7 @@ function onProgress(value: number) {
       <template v-else>
         <div class="mt-3 actions-row d-flex align-center">
           <v-btn class="mr-2" color="secondary" @click="onRemove">Remove</v-btn>
+          <v-btn variant="text" @click="onDetails">Details</v-btn>
         </div>
         <div class="mt-2 progress-block">
           <div class="text-caption progress-label">Reading progress</div>

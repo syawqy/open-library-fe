@@ -18,6 +18,7 @@ const emit = defineEmits<{
   (e: 'addToList', book: Book): void
   (e: 'removeFromList', key: string): void
   (e: 'updateProgress', key: string, value: number): void
+  (e: 'openDetails', book: Book): void
 }>()
 
 const filteredResults = computed(() => props.results)
@@ -64,6 +65,7 @@ const filteredResults = computed(() => props.results)
           @add="(b) => emit('addToList', b)"
           @remove="(key) => emit('removeFromList', key)"
           @updateProgress="(key, val) => emit('updateProgress', key, val)"
+          @details="(b) => emit('openDetails', b)"
         />
       </v-col>
     </v-row>

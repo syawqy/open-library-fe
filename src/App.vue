@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import SearchPage from './components/SearchPage.vue'
 import ReadingListPage from './components/ReadingListPage.vue'
+import BookDetailPage from './components/BookDetailPage.vue'
 
 type Book = {
   key: string
@@ -12,7 +13,9 @@ type Book = {
 }
 
 // Navigation
-const currentPage = ref<'search' | 'list'>('search')
+const currentPage = ref<'search' | 'list' | 'detail'>('search')
+const selectedBook = ref<Book | null>(null)
+const previousPage = ref<'search' | 'list'>('search')
 
 // Search state
 const query = ref('')
@@ -142,6 +145,19 @@ const readingListCards = computed(() => {
     coverUrl: val.meta?.coverUrl,
   })) as Book[] & { key: string }[]
 })
+function openDetailsFromSearch(book: Book) {
+  selectedBook.value = book
+  previousPage.value = 'search'
+  currentPage.value = 'detail'
+}
+function openDetailsFromList(book: Book) {
+  selectedBook.value = book
+  previousPage.value = 'list'
+  currentPage.value = 'detail'
+}
+function closeDetails() {
+  currentPage.value = previousPage.value
+}
 </script>
 
 <template>
@@ -170,14 +186,27 @@ const readingListCards = computed(() => {
         @addToList="addToList"
         @removeFromList="removeFromList"
         @updateProgress="setProgress"
+        @openDetails="openDetailsFromSearch"
       />
 
       <ReadingListPage
-        v-else
+        v-else-if="currentPage === 'list'"
         :cards="readingListCards"
         :readingList="readingList"
         @removeFromList="removeFromList"
         @updateProgress="setProgress"
+        @openDetails="openDetailsFromList"
+      />
+
+      <BookDetailPage
+        v-else-if="currentPage === 'detail' && selectedBook"
+        :book="selectedBook"
+        :in-list="!!readingList[selectedBook.key]"
+        :progress="getProgress(selectedBook.key)"
+        @addToList="addToList"
+        @removeFromList="removeFromList"
+        @updateProgress="setProgress"
+        @close="closeDetails"
       />
     </v-main>
   </v-app>

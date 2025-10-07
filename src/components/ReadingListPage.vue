@@ -10,6 +10,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'removeFromList', key: string): void
   (e: 'updateProgress', key: string, value: number): void
+  (e: 'openDetails', book: Book): void
 }>()
 </script>
 
@@ -29,6 +30,7 @@ const emit = defineEmits<{
           mode="list"
           @remove="(key) => emit('removeFromList', key)"
           @updateProgress="(key, val) => emit('updateProgress', key, val)"
+          @details="(b) => emit('openDetails', b)"
         />
       </v-col>
     </v-row>
